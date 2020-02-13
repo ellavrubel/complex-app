@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "watch": "nodemon app",
+    "watch": "nodemon mongoDB",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -12,8 +12,10 @@
     "ejs": "^3.0.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "mongodb": "^3.5.3",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.2",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "validator": "^12.2.0"
   }
 }

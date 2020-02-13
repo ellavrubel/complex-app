@@ -44,7 +44,7 @@
         const  app  = express();
         const router = require('./router');
 
-        app.use(express.urlencoded({extended:false}));
+        app.use(express.urlencoded({extended:false})); // для доступа к данным пользователя, которые он вводит в форму регистрации (req.body)
         app.use(express.json());
 
 
@@ -55,5 +55,5 @@
 
         app.use('/', router);
 
-        app.listen(2000);
+        module.exports = app;  // экспортирует данные из файла
 

@@ -3,8 +3,6 @@
 
             exports.login = function () {
 
-
-
             };
 
             exports.logout = function () {
@@ -17,10 +15,15 @@
 
                user.register();
 
+               if (user.errors.length) {
 
+                   res.send(user.errors);
 
-                res.send('Thanks')
+               } else{
 
+                   res.send('Congrats!');
+
+               }
 
             };
 
