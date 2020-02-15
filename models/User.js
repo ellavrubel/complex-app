@@ -31,9 +31,8 @@
                         password: this.data.password
 
                     }
-
-
                 };
+
                 User.prototype.validate = function(){
                     if(this.data.username === ""){this.errors.push('You must provide a username')}
                     if(this.data.username !== "" && !validator.isAlphanumeric(this.data.username)){this.errors.push('Username can only contain letters and numbers.')}
@@ -49,6 +48,25 @@
 
                 //
 
+                User.prototype.login = function(){
+                    return new Promise((resolve, reject) => {
+
+                        this.cleanUp();
+                        userCollection.findOne({username: this.data.username}).then((attemptedUser) => {
+                            if(attemptedUser && attemptedUser.password === this.data.password){
+                                resolve('Congrats!');
+                            } else{
+                                reject('Invalid username/password.');
+                            }
+                        }).catch(function () {
+                            reject('Try again later.');
+
+                        });
+
+                    });
+
+                };
+
 
                 User.prototype.register = function(){
 
@@ -61,8 +79,6 @@
                     if(!this.errors.length){
                         userCollection.insertOne(this.data);
                     }
-
-
                 };
 
                 module.exports = User;
