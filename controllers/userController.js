@@ -1,16 +1,36 @@
            const User = require('../models/User');
 
             // LO|GIN
+                                                                                                // Пример Promise
+                                                                                               //                   eatBreakfast()
+                                                                                               //            //     .then(() => eatLunch())
+                                                                                               //            //     .then(() => eatDinner())
+                                                                                               //            //     .catch(function(e)){
+                                                                                               //            //      console.log(e);
+                                                                                               //            // }
 
-            exports.login = function (req, res) {
+           // then() - предлагает действия в случае успеха и catch() - действия в случае провала
+                                                                                               // async function runOurAction (){
+                                                                                               //     try{
+                                                                                               //         await eatBreakfast()
+                                                                                               //         await eatLunch()
+                                                                                               //         await eatDinner()
+                                                                                               //         await eatDessert()
+                                                                                               //     } catch (err){
+                                                                                               //         console.log(err)
+                                                                                               //     }
+                                                                                               // }
+                                                                                               // runOurAction()
+
+
+           exports.login = function (req, res) {
+
                 let user = new User(req.body);
-                user.login().then(function (result) {  // then() - предлагает действия в случае успеха и catch() - действия в случае провала
-                    res.send(result);
 
-                }).catch(function (err) {
-                    res.send(err);
+                user.login()
+                    .then((result) => res.send(result))
+                    .catch((err) => res.send(err))
 
-                });
             };
 
             //LOGOUT
