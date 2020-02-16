@@ -28,8 +28,13 @@
                 let user = new User(req.body);
 
                 user.login()
-                    .then((result) => res.send(result))
-                    .catch((err) => res.send(err))
+                    .then(function(result){
+                        req.session.user = {favColor: 'blue', username: user.data.username};
+                        res.send(result)
+
+                })   .catch(function(err) {
+                    res.send(err)
+                })
 
             };
 
@@ -56,5 +61,11 @@
             // HOME
 
             exports.home = function (req, res) {
-                res.render('home-guest');
+                if(req.session.user){
+                    res.send('Welcome!!!');
+
+                } else {
+                    res.render('home-guest');
+
+                }
             };

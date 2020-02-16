@@ -42,8 +42,18 @@
 
         const express = require('express');
         const  app  = express();
+
+        const session = require('express-session');
+        let sessionOptions = session({
+                secret: 'Js is so cool!',
+                resave: false,
+                saveUninitialized: false,
+                cookie: {maxAge: 1000 * 60 * 60 *24, http: true}
+        });
+
         const router = require('./router');
 
+        app.use(sessionOptions);
         app.use(express.urlencoded({extended:false})); // для доступа к данным пользователя, которые он вводит в форму регистрации (req.body)
         app.use(express.json());
 
