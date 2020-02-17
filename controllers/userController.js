@@ -60,13 +60,23 @@
 
             exports.register = function (req, res) {
                let user = new User(req.body);
-               user.register();
+               user.register().then(() => {
 
-               if (user.errors.length) {
-                   res.send(user.errors);
-               } else{
-                   res.send('Congrats!');
-               }
+                   req.session.user = {username: user.data.username};
+                   req.session.save(function () {     // callback function
+                       res.redirect('/');
+
+                   });
+
+               }).catch((regErrors) => {
+                  regErrors.forEach(function (error) {   //функция сработает для каждой ошибки
+                       req.flash('regErrors', error);
+                   });
+                   req.session.save(function () {     // callback function
+                       res.redirect('/');
+
+                   })
+               })
             };
 
 
@@ -77,6 +87,6 @@
                     res.render('home-dashboard', {username: req.session.user.username});
 
                 } else {
-                    res.render('home-guest', {errors: req.flash('errors')});
+                    res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
                 }
             };
