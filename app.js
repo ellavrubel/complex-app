@@ -41,11 +41,11 @@
 // Complex-App
 
         const express = require('express');
-        const  app  = express();
-
-
         const session = require('express-session');
         const MongoStore = require('connect-mongo')(session);  // MongoStore - also a blueprint
+        const flash = require('connect-flash');
+
+        const  app  = express();
 
         let sessionOptions = session({
                 secret: 'Js is so cool!',
@@ -61,6 +61,7 @@
 
 
         app.use(sessionOptions);
+        app.use(flash());
         app.use(express.urlencoded({extended:false})); // для доступа к данным пользователя, которые он вводит в форму регистрации (req.body)
         app.use(express.json());
 

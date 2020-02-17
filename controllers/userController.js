@@ -37,7 +37,11 @@
                         })
 
                 })   .catch(function(err) {
-                    res.send(err)
+                    req.flash('errors', err); // первый аргумент -имя списка сообщений, любое. второй аргумент - само сообщение
+                    req.session.save(function () {
+                        res.redirect('/');
+
+                    })
                 })
 
             };
@@ -73,7 +77,6 @@
                     res.render('home-dashboard', {username: req.session.user.username});
 
                 } else {
-                    res.render('home-guest');
-
+                    res.render('home-guest', {errors: req.flash('errors')});
                 }
             };
