@@ -1,6 +1,6 @@
            const User = require('../models/User');
 
-            // LO|GIN
+
                                                                                                 // Пример Promise
                                                                                                //                   eatBreakfast()
                                                                                                //            //     .then(() => eatLunch())
@@ -9,7 +9,7 @@
                                                                                                //            //      console.log(e);
                                                                                                //            // }
 
-           // then() - предлагает действия в случае успеха и catch() - действия в случае провала
+                                                                                                  // then() - предлагает действия в случае успеха и catch() - действия в случае провала
                                                                                                // async function runOurAction (){
                                                                                                //     try{
                                                                                                //         await eatBreakfast()
@@ -22,6 +22,7 @@
                                                                                                // }
                                                                                                // runOurAction()
 
+           // LOGIN
 
            exports.login = function (req, res) {
 
@@ -30,7 +31,10 @@
                 user.login()
                     .then(function(result){
                         req.session.user = {favColor: 'blue', username: user.data.username};
-                        res.send(result)
+                        req.session.save(function () {
+                            res.redirect('/');  // callback function, сначала данные сохраняются в db и потом показывается страница
+
+                        })
 
                 })   .catch(function(err) {
                     res.send(err)
@@ -40,7 +44,11 @@
 
             //LOGOUT
 
-            exports.logout = function () {
+            exports.logout = function (req, res) {
+                req.session.destroy(function () {
+                    res.redirect('/');   // this is callback function устанавливает очередность действий
+
+                });
 
             };
 
@@ -62,7 +70,7 @@
 
             exports.home = function (req, res) {
                 if(req.session.user){
-                    res.send('Welcome!!!');
+                    res.render('home-dashboard', {username: req.session.user.username});
 
                 } else {
                     res.render('home-guest');

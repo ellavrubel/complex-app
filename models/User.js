@@ -1,5 +1,5 @@
 
-        const userCollection = require('../mongoDB').collection('users');
+        const userCollection = require('../mongoDB').db().collection('users');
 
         const validator = require('validator');
 

@@ -19,6 +19,12 @@
 
         router.post('/login', userController.login);
 
+        // POST to/logout
+
+        router.post('/logout', userController.logout);
+
+
+
 
 
 
