@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "clean-css": "^4.2.3",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "~1.4.4",
+    "core-js": "^3.6.4",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
@@ -22,7 +24,7 @@
     "mongodb": "^3.5.3",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.2",
-    "pug": "2.0.0-beta11",
+    "pug": "^2.0.4",
     "validator": "^12.2.0"
   }
 }
