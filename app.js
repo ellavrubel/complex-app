@@ -55,13 +55,18 @@
                 cookie: {maxAge: 1000 * 60 * 60 *24, http: true}
         });
 
-        const router = require('./router');
-
-
-
 
         app.use(sessionOptions);
         app.use(flash());
+        app.use(function (req, res, next) {
+                res.locals.user = req.session.user;  // .locals  делает объект user доступным в ejs файле
+                next();
+        });
+
+
+        const router = require('./router');
+
+
         app.use(express.urlencoded({extended:false})); // для доступа к данным пользователя, которые он вводит в форму регистрации (req.body)
         app.use(express.json());
 
