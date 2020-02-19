@@ -18,6 +18,12 @@
             });
         };
 
-        exports.viewSingle = function (req, res) {
-            res.render('single-post-screen');
+        exports.viewSingle = async function (req, res) {
+            try{
+                let post = await Post.findSingleById(req.params.id);  // id - динамическая часть
+                res.render('single-post-screen', {post: post}); // {} - объект, который передаем в HTML
+
+            } catch {
+                res.send('404 template will go here.')
+            }
         };
