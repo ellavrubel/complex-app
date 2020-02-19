@@ -1,4 +1,6 @@
 
+        // файл для сохранение данных в базу данных
+
         const userCollection = require('../mongoDB').db().collection('users');
         const bcrypt = require('bcryptjs');
         const validator = require('validator');
