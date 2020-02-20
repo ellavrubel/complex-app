@@ -56,14 +56,25 @@
 
            return new Promise(async function (resolve, reject) {
 
-               if (typeof (id) !=='string' || !ObjectId.isValid(id)){
+               if (typeof (id) !=='string' || !ObjectId.isValid(id)){  //isValid() - boolean, true -if the document represents an existing document, false -
                    reject();
-                   return;
+                   return;  // прерывает выполнение функции/ Функция немедленно останавливается в точке, где вызывается return
                }
-               let post = await postsCollection.findOne({_id: new ObjectId(id)});
+               let posts = await postsCollection.aggregate([  //aggregate() - используется когда нужно выполнить несколько операций
+                   {$match: {_id: new ObjectId(id)}},
+                   {$lookup: {from: 'users', localField: 'author', foreignField: '_id', as: 'authorDocument'}}, // ищем также в users collection для поиска данных об авторе. localField - users, foreignField - все другие
+                   {$project: {
+                       title: 1, // 1 == true
+                       body: 1,
+                       createdDate: 1,
+                       author: {$arrayElemAt: ['$authorDocument', 0]}
+                       }}
 
-               if(post){
-                   resolve(post);
+               ]).toArray();
+
+               if(posts.length){
+                   console.log(posts[0]);
+                   resolve(posts[0]); // возвратит 1-й элемент массива
                } else {
                    reject();
                }
