@@ -8,10 +8,12 @@
 
 
 
-                let User  = function (data) {
+                let User  = function (data, getAvatar) {
                   this.data = data;  // this.data - data - может быть любое название
                   this.errors = [];
 
+                  if(getAvatar === undefined){getAvatar = false}
+                  if (getAvatar){this.getAvatar()}
                 };
 
                 // Очистка данных
