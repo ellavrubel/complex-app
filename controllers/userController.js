@@ -113,10 +113,13 @@
                         next()
                     })
                     .catch(function () {
-                    res.render('404 Page is not found.')
+                    res.render('404');
                     })
             };
 
             exports.profilePostsScreen = function (req, res) {
-                res.render('profile');
+                res.render('profile', {
+                    profileUsername: req.profileUser.username,
+                    profileAvatar: req.profileUser.avatar
+                }); // в объекте передается то, что будет включено в ejs
             };

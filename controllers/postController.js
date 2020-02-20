@@ -11,7 +11,7 @@
 
             post.create()
                 .then(function () {
-                res.send('New post created')
+                res.send('New post created') // выдает []
             })
                 .catch(function (err) {
                 res.send(err)

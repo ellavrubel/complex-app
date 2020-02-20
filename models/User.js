@@ -140,7 +140,8 @@
                                         avatar: userDoc.avatar
                                     };
                                     resolve(userDoc)
-                                } else {
+                                }
+                                else {
                                     reject()
                                 }
                             })
