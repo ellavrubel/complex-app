@@ -19,6 +19,12 @@
 
 
 
+        // Profile related routes
+
+    router.get('/profile/:username', userController.ifUserExists, userController.profilePostsScreen);
+
+
+
         // create-post related routes
 
     router.get('/create-post', userController.mustBeLoggedIn, postController.viewCreateScreen);  // после указания адреса можно добавлять сколько угодно функций, которые нужно применить к нему

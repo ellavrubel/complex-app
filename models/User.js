@@ -116,9 +116,39 @@
                     })
                 };
 
+
                 User.prototype.getAvatar = function(){
                     this.avatar = `http://gravatar.com/avatar/${md5(this.data.email)}?s=128`
 
                 };
+
+                // Profile page function
+
+                User.findByUsername = function(username){
+                    return new Promise(function (resolve, reject) {
+                        if(typeof (username) !=='string') {
+                            reject();
+                            return
+                        }
+                        userCollection.findOne({username: username})
+                            .then(function (userDoc) {
+                                if(userDoc){
+                                    userDoc = new User(userDoc, true);  // true позволяет извлесь avatar из полученных данных
+                                    userDoc = {
+                                        _id: userDoc.data._id,
+                                        username: userDoc.data.username,
+                                        avatar: userDoc.avatar
+                                    };
+                                    resolve(userDoc)
+                                } else {
+                                    reject()
+                                }
+                            })
+                            .catch(function () {
+                                reject()
+                            })
+                    })
+                };
+
 
                 module.exports = User;

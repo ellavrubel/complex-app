@@ -103,3 +103,20 @@
                     res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
                 }
             };
+
+            // Profile page
+
+            exports.ifUserExists = function (req, res, next) {
+                User.findByUsername(req.params.username)
+                    .then(function (userDocument){
+                        req.profileUser = userDocument;
+                        next()
+                    })
+                    .catch(function () {
+                    res.render('404 Page is not found.')
+                    })
+            };
+
+            exports.profilePostsScreen = function (req, res) {
+                res.render('profile');
+            };

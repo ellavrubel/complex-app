@@ -63,12 +63,12 @@
                }
                let posts = await postsCollection.aggregate([  //aggregate() - используется когда нужно выполнить несколько операций
                    {$match: {_id: new ObjectId(id)}},
-                   {$lookup: {from: 'users', localField: 'author', foreignField: '_id', as: 'authorDocument'}}, // ищем также в users collection для поиска данных об авторе. localField - users, foreignField - все другие
-                   {$project: {
+                   {$lookup: {from: 'users', localField: 'author', foreignField: '_id', as: 'authorDocument'}}, // поиск/просмотр по коллекциям для выбора нужного документа
+                   {$project: { // Используется для выбора некоторых специальных полей из коллекции.
                        title: 1, // 1 == true
                        body: 1,
                        createdDate: 1,
-                       author: {$arrayElemAt: ['$authorDocument', 0]}
+                       author: {$arrayElemAt: ['$authorDocument', 0]}  // Returns the element at the specified array index
                        }}
 
                ]).toArray();
@@ -80,12 +80,8 @@
                        username: post.author.username,
                        avatar: new User (post.author, true).avatar
                    };
-
                    return(post);
-
                });
-
-
 
                if(posts.length){
                    console.log(posts[0]);
