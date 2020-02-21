@@ -53,6 +53,38 @@
         };
 
 
+Post.reusablePostQuery = (function (uniqueOperations) {
+
+    return new Promise(async function (resolve, reject) {
+
+        let aggOperations = uniqueOperations.concat([ // concat() method is used to merge two or more arrays. This method does not change the existing arrays, but instead returns a new array.
+
+            {$lookup: {from: 'users', localField: 'author', foreignField: '_id', as: 'authorDocument'}}, // поиск/просмотр по коллекциям для выбора нужного документа
+            {$project: { // Используется для выбора некоторых специальных полей из коллекции.
+                    title: 1, // 1 == true
+                    body: 1,
+                    createdDate: 1,
+                    author: {$arrayElemAt: ['$authorDocument', 0]}  // Returns the element at the specified array index
+                }}
+        ]);
+
+        let posts = await postsCollection.aggregate(aggOperations).toArray(); //aggregate() - используется когда нужно выполнить несколько операций. Объединит uniqueOperations и aggOperations.
+
+        // Clean up author property in each post object
+
+        posts = posts.map(function (post) {
+            post.author = {
+                username: post.author.username,
+                avatar: new User (post.author, true).avatar
+            };
+            return(post)
+        });
+            resolve(posts)
+    })
+});
+
+
+
         Post.findSingleById = (function (id) {
 
            return new Promise(async function (resolve, reject) {
@@ -61,27 +93,10 @@
                    reject();
                    return;  // прерывает выполнение функции/ Функция немедленно останавливается в точке, где вызывается return
                }
-               let posts = await postsCollection.aggregate([  //aggregate() - используется когда нужно выполнить несколько операций
-                   {$match: {_id: new ObjectId(id)}},
-                   {$lookup: {from: 'users', localField: 'author', foreignField: '_id', as: 'authorDocument'}}, // поиск/просмотр по коллекциям для выбора нужного документа
-                   {$project: { // Используется для выбора некоторых специальных полей из коллекции.
-                       title: 1, // 1 == true
-                       body: 1,
-                       createdDate: 1,
-                       author: {$arrayElemAt: ['$authorDocument', 0]}  // Returns the element at the specified array index
-                       }}
 
-               ]).toArray();
-
-               // Clean up author property in each post object
-
-               posts = posts.map(function (post) {
-                   post.author = {
-                       username: post.author.username,
-                       avatar: new User (post.author, true).avatar
-                   };
-                   return(post);
-               });
+               let posts = await Post.reusablePostQuery([
+                   {$match: {_id: new ObjectId(id)}}
+               ]);
 
                if(posts.length){
                    console.log(posts[0]);
@@ -91,6 +106,13 @@
                }
            })
         });
+
+        Post.findAuthorById = function(authorId){
+            return Post.reusablePostQuery([
+                {$match: {author: authorId}},
+                {$sort: {createdDate: -1}}, // -1 - descending order (по убыванию), 1 - ascending
+            ])
+        };
 
 
 module.exports = Post;

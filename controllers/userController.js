@@ -1,4 +1,5 @@
            const User = require('../models/User');
+            const Post = require('../models/Post');
 
 
                                                                                                 // Пример Promise
@@ -9,7 +10,7 @@
                                                                                                //            //      console.log(e);
                                                                                                //            // }
 
-                                                                                                  // then() - предлагает действия в случае успеха и catch() - действия в случае провала
+                                                    // then() - предлагает действия в случае успеха и catch() - действия в случае провала
                                                                                                // async function runOurAction (){
                                                                                                //     try{
                                                                                                //         await eatBreakfast()
@@ -74,14 +75,14 @@
 
             exports.register = function (req, res) {
                let user = new User(req.body);
-               user.register().then(() => {
-
+               user.register()
+                   .then(() => {
                    req.session.user = {username: user.data.username, avatar: user.avatar, _id: user.data._id};
                    req.session.save(function () {     // callback function
                        res.redirect('/');
                    });
 
-               }).catch((regErrors) => {
+                 }).catch((regErrors) => {
                   regErrors.forEach(function (error) {   //функция сработает для каждой ошибки
                        req.flash('regErrors', error);
                    });
@@ -118,8 +119,71 @@
             };
 
             exports.profilePostsScreen = function (req, res) {
-                res.render('profile', {
-                    profileUsername: req.profileUser.username,
-                    profileAvatar: req.profileUser.avatar
-                }); // в объекте передается то, что будет включено в ejs
+
+                // ask our post model for a certain author id
+
+                Post.findAuthorById(req.profileUser._id)
+                    .then(function (posts) {  // posts - то, что будет результатом findAuthorById()
+                        res.render('profile', {
+                            posts: posts,
+                            profileUsername: req.profileUser.username,
+                            profileAvatar: req.profileUser.avatar
+                        }); // в объекте передается то, что будет включено в ejs
+
+                    })
+                    .catch(function () {
+                        res.render('404')
+                    });
+
+
+
+
+
             };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
