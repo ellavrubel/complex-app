@@ -21,10 +21,44 @@
         // страница с постом
         exports.viewSingle = async function (req, res) {
             try{
-                let post = await Post.findSingleById(req.params.id);  // id - динамическая часть
+                let post = await Post.findSingleById(req.params.id, req.visitorId);  // id - динамическая часть; req.visitorId - определен в app.js
                 res.render('single-post-screen', {post: post}); // {} - объект, который передаем в HTML
 
             } catch {
                 res.render('404');
             }
         };
+
+        exports.viewEditScreen = async function (req, res) {
+           try {
+               let post = await Post.findSingleById(req.params.id);
+               res.render('edit-post', {post: post});
+           } catch  {
+               res.render('404')
+           }
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
