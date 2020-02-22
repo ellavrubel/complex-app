@@ -75,7 +75,7 @@
               this.validate();
 
               if(!this.errors.length){
-                  await postsCollection.findOneAndUpdate({_id: this.ObjectID(this.requestedPostId)}, {$set: {title: this.data.title, body: this.data.body}}) // The $set operator replaces the value of a field with the specified value.
+                  await postsCollection.findOneAndUpdate({_id: new ObjectId(this.requestedPostId)}, {$set: {title: this.data.title, body: this.data.body}}); // The $set operator replaces the value of a field with the specified value.
                   resolve('success')
               } else{
                   resolve('failure')
