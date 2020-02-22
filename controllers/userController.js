@@ -101,7 +101,7 @@
                     res.render('home-dashboard');
 
                 } else {
-                    res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
+                    res.render('home-guest', {regErrors: req.flash('regErrors')});
                 }
             };
 

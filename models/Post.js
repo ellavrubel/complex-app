@@ -4,10 +4,11 @@
         const ObjectId = require('mongodb').ObjectID; //  .ObjectID позволяет преобразовывать переданные строки в объекты
         const User = require('./User');
 
-        let Post = function (data, userId) {
+        let Post = function (data, userId, requestedPostId) {
             this.data = data;
             this.errors = [];  // пустой массив позволяет далее применять метод push() с выводом сообщения об ошибке
-            this.userId = userId
+            this.userId = userId;
+            this.requestedPostId = requestedPostId
         };
 
 
@@ -50,6 +51,36 @@
                 reject(this.errors);
             }
             })
+        };
+
+        Post.prototype.update = function(){
+            return new Promise(async (resolve, reject) => {
+                try{
+                    let post = await Post.findSingleById(this.requestedPostId, this.userId);
+                if(post.isVisitorOwner){
+                    //    actually update the db
+                    let status = await this.actuallyUpdate();
+                         resolve(status)
+                } else { reject() }
+
+                } catch{
+                    reject()
+                }
+            })
+        };
+
+        Post.prototype.actuallyUpdate = function(){
+          return new Promise(async (resolve, reject) =>{
+              this.cleanUp();
+              this.validate();
+
+              if(!this.errors.length){
+                  await postsCollection.findOneAndUpdate({_id: this.ObjectID(this.requestedPostId)}, {$set: {title: this.data.title, body: this.data.body}}) // The $set operator replaces the value of a field with the specified value.
+                  resolve('success')
+              } else{
+                  resolve('failure')
+              }
+          })
         };
 
 
@@ -116,6 +147,8 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
                 {$sort: {createdDate: -1}}, // -1 - descending order (по убыванию), 1 - ascending
             ])
         };
+
+
 
 
 module.exports = Post;
