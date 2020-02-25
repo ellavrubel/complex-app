@@ -106,8 +106,7 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
         // Clean up author property in each post object
 
         posts = posts.map(function (post) {
-            // console.log(post);
-            // console.log(visitorId);
+
             post.isVisitorOwner = post.authorId.equals(visitorId); // equals() возвращает true/false
 
             post.author = {
@@ -150,6 +149,26 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
                 {$sort: {createdDate: -1}}, // -1 - descending order (по убыванию), 1 - ascending
             ])
         };
+
+        Post.delete = function(postIdToDelete, currentUserId){
+
+            return new Promise(async (resolve, reject) => {
+                try{
+                    let post = await  Post.findSingleById(postIdToDelete, currentUserId);
+                    if(post.isVisitorOwner){
+
+                        await postsCollection.deleteOne({_id: new ObjectId(postIdToDelete)});
+                        resolve()
+
+                    } else{
+                        reject()
+                    }
+                } catch{
+                    reject()
+                }
+            })
+        };
+
 
 
 

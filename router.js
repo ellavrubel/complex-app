@@ -25,7 +25,7 @@
 
 
 
-        // create-post related routes
+        // post related routes
 
     router.get('/create-post', userController.mustBeLoggedIn, postController.viewCreateScreen);  // после указания адреса можно добавлять сколько угодно функций, которые нужно применить к нему
     router.post('/create-post', userController.mustBeLoggedIn, postController.create);
@@ -33,6 +33,7 @@
 
     router.get('/post/:id/edit', userController.mustBeLoggedIn, postController.viewEditScreen);
     router.post('/post/:id/edit', userController.mustBeLoggedIn, postController.edit);
+    router.post('/post/:id/delete', userController.mustBeLoggedIn, postController.delete);
 
 
 
