@@ -3,8 +3,10 @@
         const session = require('express-session');
         const MongoStore = require('connect-mongo')(session);  // MongoStore - also a blueprint
         const flash = require('connect-flash');
+        const markdown = require('marked');
 
         const  app  = express();
+        const sanitizeHTML = require('sanitize-html');
 
         let sessionOptions = session({
                 secret: 'Js is so cool!',
@@ -19,6 +21,13 @@
         app.use(flash());
 
         app.use(function (req, res, next) {
+
+                //make markdown available from within ejs templates
+
+                res.locals.filterUserHTML = function(content){
+                        return sanitizeHTML(markdown(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], allowedAttributes: {}}) //1-что хотим почистить, 2- разрешенные теги
+                };
+
                 // make all error and success messages available from all templates
 
                 res.locals.errors = req.flash('errors');

@@ -3,6 +3,7 @@
         const postsCollection = require('../mongoDB').db().collection('posts');
         const ObjectId = require('mongodb').ObjectID; //  .ObjectID позволяет преобразовывать переданные строки в объекты
         const User = require('./User');
+        const sanitizeHTML = require('sanitize-html');
 
         let Post = function (data, userId, requestedPostId) {
             this.data = data;
@@ -19,8 +20,8 @@
 
             //    get rid of any bogus properties
             this.data = {
-                title: this.data.title.trim(),
-                body: this.data.body.trim(),
+                title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+                body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
                 createdDate: new Date(),  // in Js there is a built-in blueprint for a date
                 author: ObjectId(this.userId)  // в среде mongo есть практика не сохранять ID просто как строку, а как объект
             }
@@ -105,6 +106,8 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
         // Clean up author property in each post object
 
         posts = posts.map(function (post) {
+            // console.log(post);
+            // console.log(visitorId);
             post.isVisitorOwner = post.authorId.equals(visitorId); // equals() возвращает true/false
 
             post.author = {
