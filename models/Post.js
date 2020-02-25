@@ -153,6 +153,7 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
         Post.delete = function(postIdToDelete, currentUserId){
 
             return new Promise(async (resolve, reject) => {
+
                 try{
                     let post = await  Post.findSingleById(postIdToDelete, currentUserId);
                     if(post.isVisitorOwner){
