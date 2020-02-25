@@ -36,6 +36,7 @@
 
         Post.prototype.create = function (){
             return new Promise((resolve, reject) => {
+
             this.cleanUp();
             this.validate();
 
@@ -43,9 +44,8 @@
 
             //    save post into database
                 postsCollection.insertOne(this.data)
-                    .then(() => resolve())
+                    .then((info) => resolve(info.ops[0]._id))  // выбор из массива информации от mongo только id
                     .catch(() => this.errors.push('Please, try again later.'));
-                reject(this.errors);
 
             } else {
                 reject(this.errors);
@@ -95,7 +95,7 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
                     title: 1, // 1 == true
                     body: 1,
                     createdDate: 1,
-                    authorId: '$author', //  среде mongo '' и $ в них означает не строку, в непосредственно поле - author
+                    authorId: '$author', //   в среде mongo '' и $ в них означает не строку,  непосредственно поле - author
                     author: {$arrayElemAt: ['$authorDocument', 0]}  // Returns the element at the specified array index
                 }}
         ]);
