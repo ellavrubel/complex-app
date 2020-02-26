@@ -1,4 +1,6 @@
 
+import axios from 'axios';
+
 export default class Search {   // class == blueprint
 
     // 1. select DOM elements and keep track of any useful data
@@ -7,12 +9,19 @@ export default class Search {   // class == blueprint
         this.headerSearchIcon = document.querySelector('.header-search-icon');
         this.overlay = document.querySelector('.search-overlay');
         this.closeIcon = document.querySelector('.close-live-search');
+        this.inputField = document.querySelector('#live-search-field');
+        this.resultsArea = document.querySelector('.live-search-results');
+        this.loaderIcon = document.querySelector('.circle-loader');
+        this.typingWaitTimer;
+        this.previousValue = '';
+
         this.events()
     }
 
     // 2. Events to respond to
 
     events() {        // аналог Post.prototype.events
+      this.inputField.addEventListener('keyup', () => this.keyPressHandler());
       this.closeIcon.addEventListener('click', () => this.closeOverlay());
       this.headerSearchIcon.addEventListener('click', (e) => {
             e.preventDefault();
@@ -22,12 +31,41 @@ export default class Search {   // class == blueprint
     }
 
     // 3. Methods
-    openOverlay() {
-        this.overlay.classList.add('search-overlay--visible')
+    keyPressHandler() {
+        let value = this.inputField.value;
+
+        if(value !== '' && value !== this.previousValue){
+            clearTimeout(this.typingWaitTimer);  // после каждого нажатия клавиши, таймер сбрасывается и начинается с 0
+            this.showLoaderIcon();
+            this.typingWaitTimer = setTimeout( () => this.sendRequest(), 3000)
+        }
+        this.previousValue = value;
     }
+
+    sendRequest(){
+        axios.post('/search', {searchTerm: this.inputField.value})
+            .then(() => {})
+            .catch(() => {
+                alert('The request failed')
+            })
+
+    }
+
+    showLoaderIcon(){
+        this.loaderIcon.classList.add('circle-loader--visible')
+    }
+
+
+    openOverlay() {
+        this.overlay.classList.add('search-overlay--visible');
+        setTimeout(() => this.inputField.focus(), 50)  // 1 аргумент - функция, которую надо запустить, 2 аргумент - сколько ждать до ее запуска
+    }
+
+
     closeOverlay() {
         this.overlay.classList.remove('search-overlay--visible')
     }
+
 
     injectHTML() {
         document.body.insertAdjacentHTML('beforeend',
@@ -43,7 +81,7 @@ export default class Search {   // class == blueprint
     <div class="search-overlay-bottom">
       <div class="container container--narrow py-3">
         <div class="circle-loader"></div>
-        <div class="live-search-results live-search-results--visible">
+        <div class="live-search-results">
           <div class="list-group shadow-sm">
             <div class="list-group-item active"><strong>Search Results</strong> (4 items found)</div>
 
