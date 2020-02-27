@@ -104,7 +104,6 @@ exports.search = function (req, res) {
         .catch(() => {
             res.json([])
         })
-
 };
 
 
