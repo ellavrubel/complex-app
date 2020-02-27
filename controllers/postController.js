@@ -95,6 +95,18 @@ exports.delete = function (req, res) {
         })
 };
 
+exports.search = function (req, res) {
+
+    Post.search(req.body.searchTerm)
+        .then(posts => { // posts - то, что будет найдено в db
+            res.json(posts)
+        })
+        .catch(() => {
+            res.json([])
+        })
+
+};
+
 
 
 

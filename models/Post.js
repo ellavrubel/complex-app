@@ -108,6 +108,7 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
         posts = posts.map(function (post) {
 
             post.isVisitorOwner = post.authorId.equals(visitorId); // equals() возвращает true/false
+            post.authorId = undefined; // убираем данные из доступа, когда осуществляется поиск по сайту во frontend
 
             post.author = {
                 username: post.author.username,
@@ -118,7 +119,6 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
             resolve(posts)
     })
 });
-
 
 
         Post.findSingleById = (function (id, visitorId) {
@@ -143,12 +143,14 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
            })
         });
 
+
         Post.findAuthorById = function(authorId){
             return Post.reusablePostQuery([
                 {$match: {author: authorId}},
                 {$sort: {createdDate: -1}}, // -1 - descending order (по убыванию), 1 - ascending
             ])
         };
+
 
         Post.delete = function(postIdToDelete, currentUserId){
 
@@ -165,6 +167,25 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
                         reject()
                     }
                 } catch{
+                    reject()
+                }
+            })
+        };
+
+
+        Post.search = function(searchTerm){
+
+            return new Promise(async (resolve, reject) => {
+
+                if (typeof (searchTerm) == 'string'){
+
+                    let posts = await Post.reusablePostQuery([
+                        {$match: {$text: {$search: searchTerm}}}, // поиск широкий
+                        {$sort: {score: {$meta: 'textScore'}}}  // вверху будет максимально совпадающий текст
+                    ]);
+                    resolve(posts)
+
+                } else {
                     reject()
                 }
             })

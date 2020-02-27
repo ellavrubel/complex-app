@@ -6,6 +6,7 @@ export default class Search {   // class == blueprint
     // 1. select DOM elements and keep track of any useful data
     constructor() {
         this.injectHTML();
+
         this.headerSearchIcon = document.querySelector('.header-search-icon');
         this.overlay = document.querySelector('.search-overlay');
         this.closeIcon = document.querySelector('.close-live-search');
@@ -21,6 +22,7 @@ export default class Search {   // class == blueprint
     // 2. Events to respond to
 
     events() {        // аналог Post.prototype.events
+
       this.inputField.addEventListener('keyup', () => this.keyPressHandler());
       this.closeIcon.addEventListener('click', () => this.closeOverlay());
       this.headerSearchIcon.addEventListener('click', (e) => {
@@ -31,6 +33,7 @@ export default class Search {   // class == blueprint
     }
 
     // 3. Methods
+
     keyPressHandler() {
         let value = this.inputField.value;
 
@@ -44,7 +47,10 @@ export default class Search {   // class == blueprint
 
     sendRequest(){
         axios.post('/search', {searchTerm: this.inputField.value})
-            .then(() => {})
+            .then(response => {  //response - server response with json data
+                console.log(response.data)
+
+            })
             .catch(() => {
                 alert('The request failed')
             })
@@ -58,7 +64,7 @@ export default class Search {   // class == blueprint
 
     openOverlay() {
         this.overlay.classList.add('search-overlay--visible');
-        setTimeout(() => this.inputField.focus(), 50)  // 1 аргумент - функция, которую надо запустить, 2 аргумент - сколько ждать до ее запуска
+        setTimeout(() => this.inputField.focus(), 50)  // 1 - функция, которую надо запустить, 2 npm- сколько ждать до ее запуска
     }
 
 
