@@ -1,5 +1,7 @@
 
 import axios from 'axios';
+import DOMpurify from 'dompurify';
+
 
 export default class Search {   // class == blueprint
 
@@ -66,21 +68,21 @@ export default class Search {   // class == blueprint
     renderResultsHTML(posts){
 
         if(posts.length){
-            this.resultsArea.innerHTML = `<div class="list-group shadow-sm">
+            this.resultsArea.innerHTML = DOMpurify.sanitize(`<div class="list-group shadow-sm">
             <div class="list-group-item active"><strong>Search Results</strong> (${posts.length > 1 ? `${posts.length} items found` : '1 item found'})</div>
 
            ${posts.map(post => {    // массив преобразуем в новый массив и убираем запятые
-               
-               let postDate = new Date(post.createdDate);
-               
-               return `<a href="/post/${post._id}" class="list-group-item list-group-item-action">
+
+                let postDate = new Date(post.createdDate);
+
+                return `<a href="/post/${post._id}" class="list-group-item list-group-item-action">
               <img class="avatar-tiny" src="${post.author.avatar}"> <strong>${post.title}</strong>
               <span class="text-muted small">${post.author.username} on ${postDate.getMonth()}/${postDate.getDate()}/${postDate.getFullYear()}</span>
             </a>`
-                
+
             }).join('')} 
           
-          </div>`
+          </div>`)
 
         } else {
             this.resultsArea.innerHTML = `<p class = 'alert alert-danger text-center shadow-sm'>Sorry, we could not find any results for that search</p>`
