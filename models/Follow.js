@@ -2,6 +2,7 @@
 const usersCollection = require('../mongoDB').db().collection('users');
 const followsCollection = require('../mongoDB').db().collection('follows');
 const ObjectId = require('mongodb').ObjectID;
+const User = require('./User');
 
 
 let Follow = function (followedUsername, authorId ) {
@@ -80,12 +81,81 @@ Follow.prototype.delete = function(){
 
             let followDoc = await followsCollection.findOne({followedId: followedId, authorId: new ObjectId(visitorId)});
 
-            if (followDoc){
-                return true
+            return !!followDoc;
+        };
 
-            } else {
-                return false
-            }
+
+
+        Follow.getFollowersById = function(id) {
+            return new Promise(async (resolve, reject) => {
+
+                try{
+                    let followers = await followsCollection.aggregate([
+                        {$match: {followedId: id}},
+                        {$lookup: {from: 'users', localField: 'authorId', foreignField: '_id', as: 'userDoc'}},
+                        {$project: {
+                            username: {$arrayElemAt:['$userDoc.username', 0]},
+                            email: {$arrayElemAt:['$userDoc.email', 0]}
+                        }}
+                    ]).toArray();
+
+                    followers = followers.map(function (follower) {
+                    let user = new User(follower, true); // true позволяет подцепить gravatar
+                        return {username: follower.username, avatar: user.avatar }
+                    });
+                    resolve(followers)
+
+                } catch {
+                    reject()
+                }
+            })
+        };
+
+
+        Follow.getFollowingById = function(id) {
+
+            return new Promise(async (resolve, reject) => {
+
+                try{
+                    let following = await followsCollection.aggregate([
+                        {$match: {authorId: id}},
+                        {$lookup: {from: 'users', localField: 'followedId', foreignField: '_id', as: 'userDoc'}},
+                        {$project: {
+                                username: {$arrayElemAt:['$userDoc.username', 0]},
+                                email: {$arrayElemAt:['$userDoc.email', 0]}
+                            }}
+                    ]).toArray();
+
+                    following = following.map(function (follower) {
+                        let user = new User(follower, true);                                // true позволяет подцепить gravatar
+                        return {username: follower.username, avatar: user.avatar }
+                    });
+                    resolve(following)
+
+                } catch {
+                    reject()
+                }
+            })
+        };
+
+
+        Follow.countFollowersById = function(id){
+
+            return new Promise(async (resolve, reject) =>{
+                let followerCount = await followsCollection.countDocuments({followedId: id});
+
+                resolve(followerCount)
+            })
+        };
+
+
+        Follow.countFollowingById = function(id){
+
+            return new Promise(async (resolve, reject) =>{
+                let сount = await followsCollection.countDocuments({followedId: id});
+
+                resolve(followerCount)
+            })
         };
 
 
