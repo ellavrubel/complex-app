@@ -157,7 +157,12 @@
                             profileUsername: req.profileUser.username,
                             profileAvatar: req.profileUser.avatar,
                             isFollowing: req.isFollowing,
-                            isVisitorsProfile: req.isVisitorsProfile
+                            isVisitorsProfile: req.isVisitorsProfile,
+                            counts: {
+                                postCount: req.postCount,
+                                followerCount: req.followerCount,
+                                followingCount: req.followingCount
+                            }
                         }); // в объекте передается то, что будет включено в ejs
 
                     })
@@ -179,7 +184,12 @@
                        profileUsername: req.profileUser.username,
                        profileAvatar: req.profileUser.avatar,
                        isFollowing: req.isFollowing,
-                       isVisitorsProfile: req.isVisitorsProfile
+                       isVisitorsProfile: req.isVisitorsProfile,
+                       counts: {
+                           postCount: req.postCount,
+                           followerCount: req.followerCount,
+                           followingCount: req.followingCount
+                       }
                    })
 
                } catch {
@@ -200,7 +210,12 @@ console.log(following);
                        profileUsername: req.profileUser.username,
                        profileAvatar: req.profileUser.avatar,
                        isFollowing: req.isFollowing,
-                       isVisitorsProfile: req.isVisitorsProfile
+                       isVisitorsProfile: req.isVisitorsProfile,
+                       counts: {
+                           postCount: req.postCount,
+                           followerCount: req.followerCount,
+                           followingCount: req.followingCount
+                       }
                    })
 
                } catch {

@@ -152,9 +152,9 @@ Follow.prototype.delete = function(){
         Follow.countFollowingById = function(id){
 
             return new Promise(async (resolve, reject) =>{
-                let сount = await followsCollection.countDocuments({followedId: id});
+                let count= await followsCollection.countDocuments({authorId: id});
 
-                resolve(followerCount)
+                resolve(count)
             })
         };
 
