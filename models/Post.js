@@ -1,6 +1,7 @@
 // файл для сохранение данных в базу данных
 
         const postsCollection = require('../mongoDB').db().collection('posts');
+        const followsCollection = require('../mongoDB').db().collection('follows');
         const ObjectId = require('mongodb').ObjectID; //  .ObjectID позволяет преобразовывать переданные строки в объекты
         const User = require('./User');
         const sanitizeHTML = require('sanitize-html');
@@ -199,6 +200,21 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
 
                 resolve(postCount)
             })
+        };
+
+
+        Post.getFeed = async function(id){
+
+        //  create an array of the user ids that the current user follows
+
+            let followedUsers = await followsCollection.find({authorId: new ObjectId(id)}).toArray();
+            followedUsers = followedUsers.map(function (followDoc) {
+                return followDoc.followedId
+
+            })
+
+        //    look for posts where the author is in the above array of followed users
+
         };
 
 
