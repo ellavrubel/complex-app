@@ -211,9 +211,13 @@ Post.reusablePostQuery = (function (uniqueOperations, visitorId) {
             followedUsers = followedUsers.map(function (followDoc) {
                 return followDoc.followedId
 
-            })
+            });
 
         //    look for posts where the author is in the above array of followed users
+            return Post.reusablePostQuery([
+                {$match: {author: {$in: followedUsers}}}, // найти любой пост, где аuthor находится внутри списка followedUsers
+                {$sort: {createdDate: -1}} // -1 - новые сверху
+            ])
 
         };
 
