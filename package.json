@@ -22,7 +22,7 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "env": "0.0.2",
-    "express": "~4.16.1",
+    "express": "~4.17.3",
     "express-session": "^1.17.0",
     "http-errors": "~1.6.3",
     "marked": "^0.8.0",
